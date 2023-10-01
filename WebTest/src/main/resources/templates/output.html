@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+	<head>
+		<meta charset="UTF-8">
+			<title>タスク管理</title>
+			<link th:href="@{/webjars/bootstrap/5.1.1/css/bootstrap.min.css}" rel="stylesheet" >
+	</head>
+	<body>
+		<h1>週間タスク入力シート</h1>
+		
+		<!-- 登録済みタスク一覧 -->
+		<table class="table table-bordered table-hover col-6">
+			<tr>
+				<td align="center">No.</td>
+				<td align="center">Date</td>
+				<td align="center">startHour</td>
+				<td align="center">endHour</td>
+				<td align="center">Task</td>
+				<td align="center">Memo</td>				
+			</tr>
+			<tr th:each="task : ${tasks}">
+				<td th:text="${task.id}"></td>
+				<td th:text="${task.date}"></td>
+				<td th:text="${task.startHour}"></td>
+				<td th:text="${task.endHour}"></td>
+				<td th:text="${task.name}"></td>
+				<td th:text="${task.memo}"></td>
+			</tr>
+		</table>
+		<br/>
+		
+		<!-- 日付登録結果 -->
+		<table class="table table-bordered table-hover col-6">
+			<tr>
+				<td align="center">No.</td>
+				<td align="center">Date</td>
+				<td align="center">Day of Week</td>
+			</tr>
+			<tr th:each="dayList : ${dayList}">
+				<td th:text="${dayList.id}"></td>
+				<td th:text="${#temporals.format(dayList.days, 'yyyy/MM/dd')}"></td>
+				<td th:text="${#temporals.dayOfWeekName(dayList.days)}"></td>
+			</tr>
+		</table>
+		<br/>
+		
+		<!-- スケジュール表 -->
+
+		<!-- 日付の指定  -->
+		<form th:action="@{/output}" th:object="${firstDay}" method="post">
+			<table class="table table-bordered table-hover col-6">
+				<tr>
+			       	<td>
+		               	<input type="hidden" name="id" th:value="1">
+		               	<input type="date" class="form-control" name="days" id="days" th:field="*{days}" th:classappend="${#fields.hasErrors('days')} ? 'is-invalid'">
+			               	<span th:if="${#fields.hasErrors('days')}" th:errors="*{days}"></span>
+		            </td>
+		            <td>
+		             	<input type="submit" value="変更" class="btn btn-primary mt-3">
+						
+					</td>
+				</tr>
+			</table>
+		</form>	
+		
+		<!-- 出力欄  -->
+		<table class="table table-bordered table-hover col-6">
+			<thead>
+				<tr><td>スケジュール表</td></tr>
+			</thead>
+			<tbody>
+			<!--  指定日付＋6日の表示 -->
+				<tr>
+					<td align="center">スケジュール</td>
+					<td align="center"  th:each="dayList : ${dayList}">
+						<span th:text="${#temporals.format(dayList.days, 'yyyy/MM/dd')}"></span>
+					</td>
+				</tr>
+			<!-- 時間帯の表示 -->
+				<tr>
+					<td align="center">時間帯</td>
+					<td align="center"  th:each="dayList : ${dayList}">
+						<span th:text="${#temporals.dayOfWeekName(dayList.days)}"></span>
+					</td>
+				</tr>
+
+			<!-- 日付・時間帯別のタスクの表示 -->
+				<tr th:each="hourList : ${hourList}">
+					<td align="center" th:text="${hourList.hours}"></td>
+					<td align="center">
+					  <div>
+                        <span th:each="task : ${tasks}">
+                            <span th:if="${day != null && task.date == day.days && task.startHour == hourList.hours}">
+                                <span th:text="${task.name}">
+                                </span>
+                                <br/>
+                            </span>
+                        </span>
+                      </div>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+
+		<script src="webjars/jquery/3.6.0/jquery.min.js"></script>
+		<script src="webjars/bootstrap/5.1.1/js/bootstrap.min.js"></script>
+	</body>
+</html>

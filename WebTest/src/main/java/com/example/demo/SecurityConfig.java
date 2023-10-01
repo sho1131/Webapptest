@@ -1,6 +1,8 @@
 package com.example.demo;
 
 /*
+import org.springframework.context.annotation.Bean;
+
 @EnableWebSecurity
 public class SecurityConfig {
 	  
@@ -18,3 +20,4 @@ public class SecurityConfig {
 	    }
 }
 */
+

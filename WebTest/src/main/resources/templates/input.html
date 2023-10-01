@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+	<head>
+		<meta charset="UTF-8">
+		<title>タスク管理</title>
+		<link th:href="@{/webjars/bootstrap/5.1.1/css/bootstrap.min.css}" rel="stylesheet" >
+	</head>
+	
+	<body>
+		<div class="container">
+			<h1 class="my-5">週間タスク入力シート</h1>
+
+			<!-- 入力欄  -->
+			<form th:action="@{/input}" th:object="${taskForm}" method="post" id="input">
+				<table class="table table-bordered table-hover col-6">
+	
+				<!-- 日付  -->
+			    	<tr class="form-group">
+			        	<th class="align-middle">日付</th>
+			        	<td>
+			               	<input type="date"
+			               			class="form-control"
+			               			name="date"
+			               			th:field="*{date}"
+			               			th:classappend="${#fields.hasErrors('date')} ? 'is-invalid'">
+			               	<span th:if="${#fields.hasErrors('date')}" th:errors="*{date}"></span>
+			            </td>
+					</tr>
+						
+					<!-- 開始時刻  -->
+			        <tr class="form-group">
+			        	<th class="align-middle">開始時刻</th>
+			            <td>
+			            	<select form="input" name="startHour">
+								<option 
+										 th:each="hours : ${hourList}"
+										 th:text="${hours.hours}"
+										 th:selected="${hours.hours == selectedValue}">
+			               		</option>
+			               	</select>
+			               	<span th:if="${#fields.hasErrors('startHour')}" th:errors="*{startHour}"></span>
+			            </td>
+					</tr>
+								            
+					<!-- 終了時刻  -->
+			        <tr class="form-group">
+			        	<th class="align-middle">終了時刻</th>
+			            <td>
+			            	<select form="input" name="endHour">
+								<option 
+										 th:each="hours : ${hourList}"
+										 th:text="${hours.hours}"
+										 th:selected="${hours.hours == selectedValue}">
+			               		</option>
+			               	</select>
+			               	<span th:if="${#fields.hasErrors('endHour')}" th:errors="*{endHour}"></span>
+			            </td>
+					</tr>
+								            
+					<!-- タスク名  -->
+			        <tr class="form-group">
+			        	<th class="align-middle">タスク名</th>
+			            <td>
+			            	<input type="text" class="form-control" name="name" th:field="*{name}" th:classappend="${#fields.hasErrors('name')} ? 'is-invalid'">
+			               	<span th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></span>
+			            </td>
+					</tr>
+						
+					<!-- タスク詳細  -->
+			        <tr class="form-group">
+			        	<th class="align-middle">タスク詳細</th>
+			            <td>
+			            	<input type="text" class="form-control" name="memo" th:field="*{memo}" th:classappend="${#fields.hasErrors('memo')} ? 'is-invalid'">
+			            	<span th:if="${#fields.hasErrors('memo')}" th:errors="*{memo}"></span>
+			            </td>
+			        </tr>
+			            
+				</table>
+			    <input type="submit" value="登録" class="btn btn-primary mt-3">
+			</form>
+
+		</div>
+		<script src="webjars/jquery/3.6.0/jquery.min.js"></script>
+		<script src="webjars/bootstrap/5.1.1/js/bootstrap.min.js"></script>
+	</body>
+</html>
