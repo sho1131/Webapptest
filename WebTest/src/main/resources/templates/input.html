@@ -8,12 +8,12 @@
 	
 	<body>
 		<div class="container">
-			<h1 class="my-5">週間タスク入力シート</h1>
+			<h2 class="my-5">週間タスク</h2>
 
 			<!-- 入力欄  -->
 			<form th:action="@{/input}" th:object="${taskForm}" method="post" id="input">
 				<table class="table table-bordered table-hover col-6">
-	
+					<tr><td colspan="2">入力欄</td></tr>
 				<!-- 日付  -->
 			    	<tr class="form-group">
 			        	<th class="align-middle">日付</th>
@@ -76,10 +76,77 @@
 			        </tr>
 			            
 				</table>
-			    <input type="submit" value="登録" class="btn btn-primary mt-3">
+			    <input type="submit" value="登録" class="btn btn-primary mt-3" name="regiTask">
 			</form>
+			<br/><br/>
+
+		<!-- スケジュール表 -->
+
+		<!-- 日付の指定  -->
+		<div class="col-4">
+		<form th:action="@{/input}" th:object="${firstDay}" method="post">
+			<table>
+				<tr>
+			       	<td>日付指定</td>
+			    </tr>
+				<tr>
+			       	<td>
+		               	<input type="hidden" name="id" th:value="1">
+		               	<input type="date" class="form-control" name="days" id="days" th:field="*{days}" th:classappend="${#fields.hasErrors('days')} ? 'is-invalid'">
+			               	<span th:if="${#fields.hasErrors('days')}" th:errors="*{days}"></span>
+		            </td>
+		            <td>
+		             	<input type="submit" value="変更" class="btn btn-primary mt-3" name="regiDay">
+						
+					</td>
+				</tr>
+			</table>
+		</form>	
+		</div>
+				
+		<!-- 出力欄  -->
+		<table class="table table-bordered table-hover col-6 border">
+			<thead>
+				<tr>
+					<td  th:colspan="${dayList.size()}+1">スケジュール表</td>
+				</tr>
+			</thead>
+			<tbody>
+			<!--  指定日付＋6日の表示 -->
+				<tr>
+					<td align="center">スケジュール</td>
+					<td align="center"  th:each="dayList : ${dayList}">
+						<span th:text="${#temporals.format(dayList.days, 'yyyy/MM/dd')}"></span>
+					</td>
+				</tr>
+			<!-- 時間帯の表示 -->
+				<tr>
+					<td align="center">時間帯</td>
+					<td align="center"  th:each="dayList : ${dayList}">
+						<span th:text="${#temporals.dayOfWeekName(dayList.days)}"></span>
+					</td>
+				</tr>
+
+			<!-- 日付・時間帯別のタスクの表示 -->
+				<tr th:each="hourList : ${hourList}">
+					<td align="center" th:text="${hourList.hours}">
+					</td>
+					<td align="center" th:each="dayList : ${dayList}">
+                        <span th:each="task : ${tasks}">
+                            <span th:if="${task.date.equals(dayList.days) && task.startHour.equals(hourList.hours)}">
+                                <span th:text="${task.name}">
+                                </span>
+                                <br/>
+                            </span>
+                        </span>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		<!-- スケジュール表はここまで -->
 
 		</div>
+		<br/>
 		<script src="webjars/jquery/3.6.0/jquery.min.js"></script>
 		<script src="webjars/bootstrap/5.1.1/js/bootstrap.min.js"></script>
 	</body>

@@ -1,5 +1,7 @@
 package com.example.demo;
 
+import java.time.LocalDate;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
@@ -9,7 +11,7 @@ public class TaskForm {
 
 	public Integer id;
     
-	public String date;
+	public LocalDate date;
 	
 	public String startHour;
     	

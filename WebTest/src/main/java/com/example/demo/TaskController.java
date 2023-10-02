@@ -77,15 +77,25 @@ public class TaskController {
 	
 	@GetMapping("input")	
 	String input(@ModelAttribute TaskForm taskForm, Model model) {
-		//時間帯Listの設定
+		//時間帯Listの設定（時間帯の全件取得）
 		List<HourList> hourList = hourService.findAll();
 		model.addAttribute("hourList", hourList);
 		model.addAttribute("selectedValue", "09:00");
-
+		//タスクの全件取得
+		List<Task> tasks = taskService.findAll();
+		model.addAttribute("tasks", tasks);
+		//フォームで選択した日付（ID=1）の取得
+		DayList firstDay = dayService.getId(1);
+		model.addAttribute("firstDay", firstDay);
+		//日付の全件取得
+		List<DayList> dayList = dayService.findAll();
+		model.addAttribute("dayList", dayList);
+		
 		return "input";
 	}
 	
-	@PostMapping("input")
+	//タスク登録
+	@PostMapping(value="input" , params="regiTask")
 	String regist(@ModelAttribute @Validated TaskForm taskForm, BindingResult result, Model model) {
 		//バリデーションエラーがあるときの処理
 		if (result.hasErrors()) {
@@ -98,7 +108,36 @@ public class TaskController {
 	    taskService.insert(task);
 	    return "redirect:/input";
 	}
-	  
+
+	//カレンダーの日付指定
+	@PostMapping(value="input" , params="regiDay")
+	String registday(@RequestParam("days") String daysStr,@ModelAttribute @Validated DayList dayList, BindingResult result, Model model) {
+		//バリデーションエラーがあるときの処理→リダイレクトさせる
+			if (result.hasErrors()) {
+		    	return "redirect:/input";
+		    }
+		
+		//バリデーションエラーがないときの処理
+			LocalDate days = LocalDate.parse(daysStr);
+
+			// ID=1の格納(フォームで選択した日付）
+				DayList firstDay = new DayList();
+				firstDay.setId(1);
+				firstDay.setDays(days);
+				dayService.save(firstDay);
+
+			// ID=2～7の格納
+				for (int id = 2; id <= 7; id++) {
+					DayList nextDays = new DayList();
+					nextDays.setId(id);
+					nextDays.setDays(days.plusDays(id - 1));
+					dayService.save(nextDays);
+				}
+				
+				return "redirect:/input";
+    }
+	
+	
 
 	/*
 	// ログイン機能（試作中）

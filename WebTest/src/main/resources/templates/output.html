@@ -88,9 +88,9 @@
 				<tr th:each="hourList : ${hourList}">
 					<td align="center" th:text="${hourList.hours}"></td>
 					<td align="center">
-					  <div>
+					  <div th:each="dayList : ${dayList}">
                         <span th:each="task : ${tasks}">
-                            <span th:if="${day != null && task.date == day.days && task.startHour == hourList.hours}">
+                            <span th:if="${task.date.equals(dayList.days) && task.startHour.equals(hourList.hours)}">
                                 <span th:text="${task.name}">
                                 </span>
                                 <br/>
@@ -101,6 +101,7 @@
 				</tr>
 			</tbody>
 		</table>
+		<!-- スケジュール表はここまで -->
 
 		<script th:src="@{/webjars/jquery/3.6.0/jquery.min.js}"></script>
 		<script th:src="@{/webjars/bootstrap/5.1.1/js/bootstrap.min.js}"></script>
